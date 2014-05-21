@@ -1,0 +1,33 @@
+----------------------------------------------------------------------
+* Bag of Words Pipeline toolkit                                      *
+* Version 0.1 (05/2014)                                              *
+*                                                                    *
+* Authors: Jose Rivera (jose.rivera@imperial.ac.uk)                  *
+*          Ioannis Alexiou (i.alexiou@qmul.ac.uk)                    *
+*          Anil Bharath (a.bharath@imperial.ac.uk)                   *   
+*                                                                    *
+*                                                                    *
+* Biologically Inspired Computer Vision Group                        *
+*                                                                    *
+* Web: http://www.bicv.org                                           *
+-----------------------------------------------------------------------
+
+This is a Matlab toolkit that provides the necessary modules to construct a
+typical bag of words pipeline for object recognition and categorisation 
+purposes.
+
+It is also an evaluation toolkit for the comparison of the different
+algorithms that comprise the pipeline modules.
+
+Requirements:
+============
+
+SIFT, DSIFT, VLAD and kernel implementations require VLFEAT (http://www.vlfeat.org/)
+Clustering requires INRIA's Yael K-means (https://gforge.inria.fr/projects/yael/)
+LibSVM is used to implement SVM classification (http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
+
+Running Instructions:
+====================
+
+1. Run setup.m for the installation of the 3rd party libraries.
+2. Run main.m 
