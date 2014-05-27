@@ -11,32 +11,22 @@
 
 % PATHS
 
-libPath = './lib';
-utilsPath = './utils';
-addpath(libPath,utilsPath);
+utilsPath  = './utils';
+datasetDir = '../dataset/data';
 
+addpath(utilsPath);
 
-% Feature Parameters
+%% 0. Choose parameters in userdata and run the script
 
-features.data = siftArr;
-features.x = gridX(:);% + params.patchSize/2 - 0.5;
-features.y = gridY(:);% + params.patchSize/2 - 0.5;
-features.wid = wid;
-features.hgt = hgt;
+userdata
 
-% Parameters
+%% 1. Split the dataset between train and test sets
 
-params = struct(...
-    'feat',             'sift',...      % Feature type
-    'maxImageSize',     300,...
-    'gridSpacing',      2,...
-    'patchSize',        16,...
-    'dictionarySize',   4000,...        % Number of visual words
-    'numTrainImages',   30,...          % # Training or "texton" images
-    'numTestImages',    50,...          % # Test images, -1 for all - training
-    'kmeans',           struct(...
-      'maxIter',          50,...          % Max # k-means iterations
-      'maxNumFeats',      100000,...      % Max number of descriptors to be used
-      'normHist',         1),...          % 1 to normalise histograms, 0 otherwise
-    'pyramidLevels',      3);           % Number of spatial pyramid levels
+dataset = splitDataset(datasetDir,params.numTrainImages,params.numTestImages);
+
+%% 2. Compute or load features
+
+feature_extraction(datasetDir,dataset,params);
+
+%% 3. Generate histogram of visual words
 

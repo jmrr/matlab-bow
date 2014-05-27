@@ -42,7 +42,7 @@ for cat = 1:length(categoryDirs)
    
     % Get the indices of the valid image files within each category
     
-    catDir     = fullfile(datasetDir,categoryDirs(1).name);
+    catDir     = fullfile(datasetDir,categoryDirs(cat).name);
     file       = dir(catDir);
     fileNames  = {file.name};
     [~,~,exts] = cellfun(@(x) fileparts(x),fileNames,'UniformOutput',0);
@@ -58,12 +58,12 @@ for cat = 1:length(categoryDirs)
     
     dataset(cat).numImages = length(imgs);
     dataset(cat).className = categoryDirs(cat).name;
-    dataset(cat).files       = {imgs(:).name};
+    dataset(cat).files     = {imgs(:).name};
     
-    dataset(cat).train_id                = false(1,dataset(cat).numImages);
+    dataset(cat).train_id  = false(1,dataset(cat).numImages);
     dataset(cat).train_id(imgIds(1:Ntrain)) = true;
     
-    dataset(cat).test_id = false(1,dataset(cat).numImages);
+    dataset(cat).test_id   = false(1,dataset(cat).numImages);
     dataset(cat).test_id(imgIds(Ntrain+1:Ntrain + ...
         min(Ntest,dataset(cat).numImages-Ntrain))) = true;
     
