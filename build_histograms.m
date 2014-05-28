@@ -18,6 +18,7 @@ for cat = 1:length(dataset)
     
     for img = 1:numImgs
         
+        % Load image        
         [~,imgFname,~] = fileparts(dataset(cat).files{img});
         featFname      = fullfile(catPath,[imgFname '.' featSuffix]);
         load(featFname,'features','-mat');
@@ -27,25 +28,22 @@ for cat = 1:length(dataset)
         [~, words_id] = min(eucDist2,[],2);
         
         % Create encodedImg struct
-        
-        encodedImg = struct('data',words_id,'x',features.x,'y',features.y,...
+                encodedImg = struct('data',words_id,'x',features.x,'y',features.y,...
             'wid',features.wid,'hgt',features.hgt);
         
         HoVW = hist(words_id,1:params.dictionarySize);
         
         HoVW_all = [HoVW_all; HoVW];
-        % Output file names
         
+        % Output file names
         savePath  = fullfile(catPath, sprintf('%s_encoded_%d.mat', imgFname, params.dictionarySize));
         savePath2 = fullfile(catPath, sprintf('%s_hist_%d.mat', imgFname, params.dictionarySize));
         
         % Save the data for each image
-        
         save(savePath,'encodedImg');
         save(savePath2,'HoVW');
         
         % Processing message
-        
         fprintf('Processing %s: %.2f%% completed...\n', ...
             imgFname, img/dataset(cat).numImages*100);
         
@@ -59,3 +57,5 @@ for cat = 1:length(dataset)
     save(savePathAll, 'HoVW_all', '-ascii');
     
 end % end for categories
+
+end % end function

@@ -26,3 +26,7 @@ feature_extraction(datasetDir,dataset,params);
 %% 3. Generate histogram of visual words
 
 create_dictionaries(datasetDir,params,dataset,dictDir);
+
+%% 4. Construct spatial pyramids for Spatial Pyramid Matching
+
+pyramid_all = compile_pyramid(dataset,datasetDir,sprintf('_encoded_%d.mat',params.dictionarySize),params);
