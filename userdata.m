@@ -1,4 +1,4 @@
-% USERDATA  User data for BOW_PIPELINE
+cesar USERDATA  User data for BOW_PIPELINE
 %   Edit this script to enter the information you need for BOW_PIPELINE.
 %
 %   * Specify paths for the 3rd party libraries
@@ -6,17 +6,20 @@
 %
 %   Copyright 2014 Jose Rivera @ BICV group Imperial College London.
 
-% PATHS
-
-libPath = './lib';
-lp      = genpath(libPath);
-addpath(lp);
+%% PATHS
 
 
-utilsPath  = './utils';
-datasetDir = '../dataset/data';
 
-addpath(utilsPath);
+libPath    = './lib';                   % Lib path (3rd party libraries and code)
+utilsPath  = './utils';                 % Utils path (utils code)
+datasetDir = '../dataset/data';         % Dataset path
+dictDir = fullfile(datasetDir,'dict'); % Dictionary path
+
+lp         = genpath(libPath);
+addpath(lp,utilsPath);
+
+% Library initialisation (required for VLFeat)
+vl_setup;
 
 % Parameters
 
@@ -25,7 +28,7 @@ params = struct(...
     'maxImageSize',     300,...
     'gridSpacing',      2,...
     'binSize',        4,...
-    'dictionarySize',   200,...        % Number of visual words
+    'dictionarySize',   4000,...        % Number of visual words
     'numTrainImages',   30,...          % # Training images
     'numTestImages',    50,...          % # Test images, -1 for all - training
     'kmeans',           struct(...

@@ -1,4 +1,4 @@
-function [] = create_dictionaries(datasetDir,params,dataset,dict_path)
+function [] = create_dictionaries(datasetDir,params,dataset,dictDir)
 
 % CREATE_DICTIONARIES generates a vocabulary of visual words using K-means
 %
@@ -6,7 +6,7 @@ function [] = create_dictionaries(datasetDir,params,dataset,dict_path)
 %   selected descriptors from the specified training set into
 %   clusters using k-means.
 %
-%   Requirements: k-means
+%   Requirements: k-means code
 %
 %
 %   Authors: Jose Rivera-Rubio @ BICV group Imperial College London
@@ -20,7 +20,7 @@ end
 
 maxNumFeats    = params.kmeans.maxNumFeats;
 maxNumFeatsImg = maxNumFeats/params.numTrainImages;
-fileExt        = params.feat;
+featSuffix        = params.feat;
 
 fprintf('\nBuilding vocabulary of visual words:\n');
 
@@ -37,7 +37,7 @@ for cat = 1:length(dataset)
     for t = 1:length(trainLabels)
         
         [~,imgFname,~] = fileparts(dataset(cat).files{t});
-        featFname      = fullfile(catPath,[imgFname '.' fileExt]);
+        featFname      = fullfile(catPath,[imgFname '.' featSuffix]);
         load(featFname,'features','-mat');
         
         data2add = features.data;
@@ -71,14 +71,16 @@ for cat = 1:length(dataset)
     dictionary =  kmeans_bo(double(allDescriptors),params.dictionarySize,...
         params.kmeans.maxIter); % BOVW Codebook
 
-    
+    dictionary = dictionary'; % Back to num_words x desc_dim size
     % Saving the dictionary
     
     fprintf('Saving BOVW dictionary...\n');
     
-    savepath = fullfile(dict_path);
+    savepath = fullfile(dictDir);
+    saveFname = sprintf('dictionary_%d.mat',params.dictionarySize);
     mkdir(savepath);
-    save(savepath,'dictionary');
+    
+    save(fullfile(savepath,saveFname),'dictionary');
     
     
 

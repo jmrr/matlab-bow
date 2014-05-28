@@ -11,11 +11,6 @@
 
 % PATHS
 
-utilsPath  = './utils';
-datasetDir = '../dataset/data';
-
-addpath(utilsPath);
-
 %% 0. Choose parameters in userdata and run the script
 
 userdata
@@ -30,3 +25,4 @@ feature_extraction(datasetDir,dataset,params);
 
 %% 3. Generate histogram of visual words
 
+create_dictionaries(datasetDir,params,dataset,dictDir);

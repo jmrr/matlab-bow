@@ -20,6 +20,9 @@ function [] = feature_extraction(datasetDir,dataset,params)
 % features.hgt  = hgt;            % Height of the image
 % features.patchSize = 4*binSize; % Patch size in pixels of the desc.
 
+% Force to compute descriptors flag
+
+computeDescriptors = 0;
 
 binSize = params.binSize;
 stride  = params.gridSpacing;
@@ -40,7 +43,7 @@ for cat = 1:length(dataset)
         
         % Skip if feature already computed
         
-        if exist(featFname,'file')
+        if (exist(featFname,'file') && ~computeDescriptors)
             fprintf('File exists! Skipping %s \n',featFname);
             continue;
         end;
@@ -61,7 +64,7 @@ for cat = 1:length(dataset)
         
         % Construct the final struct
         
-        features = struct('data',uint8(512*d'),'x',f(1,:),'y',f(2,:),...
+        features = struct('data',single(d'),'x',f(1,:),'y',f(2,:),...
             'wid',wid,'hgt',hgt,'patchSize',4*binSize);
         
         fprintf('Processing %s: wid %d, hgt %d, grid size: %d x %d, %d patches,%.2f%% completed...\n', ...
@@ -76,6 +79,8 @@ for cat = 1:length(dataset)
         parSave(featFname,features);
         
     end % end for loop images within a category
+    
+    fprintf('\nFinished category %s\n\n',dataset(cat).className);
     
     
 end % end for loop categories
