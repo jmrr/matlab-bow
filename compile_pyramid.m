@@ -13,7 +13,7 @@ function [ pyramid_all ] = compile_pyramid(dataset, datasetDir, textonSuffix, pa
 %      - textonSuffix: this is the suffix appended to the image file name
 %      to denote the data file that contains the textons indices and
 %     coordinates. Its default value is '_texton_ind_%d.mat'
-%     [_encoded_%d.mat for this mod of the code] where %d is the dictionary
+%     [_HA_encoded_%d.mat for this mod of the code] where %d is the dictionary
 %     size. params.dictionarySize: size of descriptor dictionary (200 has
 %     been found to be a good size)
 %     - params.pyramidLevels: number of levels of the pyramid to build
@@ -115,7 +115,7 @@ for cat = 1:length(dataset)
                 % make histogram of features in bin
                 binCenters = (1:dictSize);
                 HoVW       = hist(texton_patch,binCenters);
-                pyramid_cell{1}(i,j,:) = HoVW./length(encodedImg.data);
+                pyramid_cell{1}(i,j,:) = HoVW./length(encodedImg.data); % L1-norm
             end
             
         end

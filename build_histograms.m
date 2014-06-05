@@ -36,8 +36,8 @@ for cat = 1:length(dataset)
         HoVW_all = [HoVW_all; HoVW];
         
         % Output file names
-        savePath  = fullfile(catPath, sprintf('%s_encoded_%d.mat', imgFname, params.dictionarySize));
-        savePath2 = fullfile(catPath, sprintf('%s_hist_%d.mat', imgFname, params.dictionarySize));
+        savePath  = fullfile(catPath, sprintf('%s_HA_encoded_%d.mat', imgFname, params.dictionarySize));
+        savePath2 = fullfile(catPath, sprintf('%s_HA_hist_%d.mat', imgFname, params.dictionarySize));
         
         % Save the data for each image
         save(savePath,'encodedImg');

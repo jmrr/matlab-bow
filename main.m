@@ -27,6 +27,30 @@ feature_extraction(datasetDir,dataset,params);
 
 create_dictionaries(datasetDir,params,dataset,dictDir);
 
-%% 4. Construct spatial pyramids for Spatial Pyramid Matching
+%% 4. ENCODING METHODS
 
-pyramid_all = compile_pyramid(dataset,datasetDir,sprintf('_encoded_%d.mat',params.dictionarySize),params);
+% 4.1 Hard assignment: Quantize all descriptors in the dataset
+
+build_histograms(datasetDir,params,dataset,dictDir);
+
+% 4.1 LLC coding
+
+llc_coding(dataset,datasetDir,params,dictDir)
+
+%% (5 optional) Construct spatial pyramids for Spatial Pyramid Matching
+
+% 5.1 Spatial Pyriamid Matching (with Hard Assignment)
+
+pyramid_all = compile_pyramid(dataset,datasetDir,sprintf('_HA_encoded_%d.mat',params.dictionarySize),params);
+
+% 5.2 SPM with LLC.
+
+%% 6. Perform classification
+
+% 6.1 Gather the data from all categories and prepare it for SVM input and
+% cross-validation.
+
+[featTrain,featTest,labelsTrain,labelsTest] = gather_data(dataset,datasetDir,params);
+
+% 6.2 Linear SVM
+[svmModel,prediction] = linear_svm(featTrain,featTest,labelsTrain,labelsTest,dataset,params);

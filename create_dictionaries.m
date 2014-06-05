@@ -3,14 +3,17 @@ function [] = create_dictionaries(datasetDir,params,dataset,dictDir)
 % CREATE_DICTIONARIES generates a vocabulary of visual words using K-means
 %
 %   CREATE_DICTIONARIES(descriptors_path,params,dict_path) groups randomly
-%   selected descriptors from the specified training set into
+%   selected descriptors from a specific training set into
 %   clusters using k-means.
 %
-%   Requirements: k-means code
+%   Requirements: k-means code from Liefeng Bo
+%   (http://homes.cs.washington.edu/~lfb/)
 %
-%
-%   Authors: Jose Rivera-Rubio @ BICV group Imperial College London
-%          jose.rivera@imperial.ac.uk www.bicv.org
+%   See also FEATURE_EXTRACTION and BUILD_HISTOGRAMS
+%   
+%   Author: Jose Rivera-Rubio @ BICV group Imperial College London
+%           jose.rivera@imperial.ac.uk 
+%           http://www.bicv.org
 %
 %   Date: May, 2014
 
@@ -76,13 +79,14 @@ for cat = 1:length(dataset)
     
     fprintf('Saving BOVW dictionary...\n');
     
-    savepath = fullfile(dictDir);
+    savepath = dictDir;
     saveFname = sprintf('dictionary_%d.mat',params.dictionarySize);
     mkdir(savepath);
     
     save(fullfile(savepath,saveFname),'dictionary');
     
-    
+	fprintf('Done.\n');
+
 
 end % for categories
 
