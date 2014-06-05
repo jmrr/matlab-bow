@@ -25,8 +25,8 @@ for cat = 1:length(dataset)
             fprintf('File exists! Skipping %s \n',llcFname);
             load(savePath);
             LLC_all = [LLC_all ; LLCimg];
-            continue;
-        end;
+            continue
+        end
                 
         llc = max(LLC_coding_appr(dictionary,features.data)); %max-pooling
         llc = llc/norm(llc); %L2 norm

@@ -1,8 +1,8 @@
-function [svmModel,prediction] = linear_svm(featTrain,featTest,allLabelsTrain,allLabelsTest,dataset,params)
+function [svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,allLabelsTrain,allLabelsTest,dataset,params)
 
 % SVM PARAMETERS
 
-KERNEL_TYPE   = 0;  % 0 -- linear
+KERNEL_TYPE   = 4;  % 0 -- linear
                     % 1 -- polynomial
                     % 2 -- radial basis function
                     % 3 -- sigmoid
@@ -16,8 +16,8 @@ initTest      = 1;
 
 for cat = 1:length(dataset)
     
-    trainLabels = -1*ones(dataset(cat).numImages,1);
-    testLabels  = -1*ones(dataset(cat).numImages,1);
+    trainLabels = -1*ones(size(allLabelsTrain));
+    testLabels  = -1*ones(size(allLabelsTest));
     
     trainLabels(initTrain:initTrain+params.numTrainImages-1) = 1;
     testLabels(initTest:initTest+params.numTrainImages-1)    = 1;    
@@ -38,8 +38,8 @@ for cat = 1:length(dataset)
         % -b (probability estimates), -q (quiet)
         
         svmParams = sprintf('-t %d -v %d -c %f -b %d -q',KERNEL_TYPE,CROSS_VALID_N,c_vals(ci),1);
-        
-        model(ci) = svmtrain(trainLabels,featTrain,svmParams);
+                
+        model(ci) = svmtrain(trainLabels,[(1:size(kernelTrain{cat},1))' ,kernelTrain{cat}],svmParams);
         
     end
     
@@ -49,9 +49,9 @@ for cat = 1:length(dataset)
     
     svmParams = sprintf('-t %d -c %f -b %d -q',KERNEL_TYPE,c_vals(best_c),1);
     
-    svmModel(cat) = svmtrain(trainLabels,featTrain,svmParams);
+    svmModel(cat) = svmtrain(trainLabels,[(1:size(kernelTrain{cat},1))' ,kernelTrain{cat}],svmParams);
     
-    [predicted_label, accuracy, estimates] = svmpredict(testLabels,featTest,svmModel(cat),'-b 1');
+    [predicted_label, accuracy, estimates] = svmpredict(testLabels,[(1:size(kernelTest{cat},1))' ,kernelTest{cat}],svmModel(cat),'-b 1');
     
     prediction{cat}.predicted_label = predicted_label;
     prediction{cat}.accuracy        = accuracy;
@@ -61,3 +61,4 @@ end % end num categories
 
 
 end % end function
+

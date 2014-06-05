@@ -1,4 +1,4 @@
-function [] = create_dictionaries(datasetDir,params,dataset,dictDir)
+function [dictionary] = create_dictionaries(datasetDir,params,dataset,dictDir)
 
 % CREATE_DICTIONARIES generates a vocabulary of visual words using K-means
 %
@@ -10,9 +10,9 @@ function [] = create_dictionaries(datasetDir,params,dataset,dictDir)
 %   (http://homes.cs.washington.edu/~lfb/)
 %
 %   See also FEATURE_EXTRACTION and BUILD_HISTOGRAMS
-%   
+%
 %   Author: Jose Rivera-Rubio @ BICV group Imperial College London
-%           jose.rivera@imperial.ac.uk 
+%           jose.rivera@imperial.ac.uk
 %           http://www.bicv.org
 %
 %   Date: May, 2014
@@ -25,68 +25,79 @@ maxNumFeats    = params.kmeans.maxNumFeats;
 maxNumFeatsImg = maxNumFeats/params.numTrainImages;
 featSuffix        = params.feat;
 
-fprintf('\nBuilding vocabulary of visual words:\n');
 
-% Load all the descriptors of the training set and concatenate them into a
-% single array:
+dictFname = sprintf('dictionary_%d.mat',params.dictionarySize);
+savePath = fullfile(dictDir,dictFname);
 
-allDescriptors = [];
-
-for cat = 1:length(dataset)
+if (exist(savePath,'file'))
+    fprintf('File exists! Skipping %s \n',dictFname);
+    load(savePath);
+else % Build vocabulary
     
-    catPath     = fullfile(datasetDir,dataset(cat).className);
-    trainLabels = find(dataset(cat).train_id);
+    fprintf('\nBuilding vocabulary of visual words:\n');
     
-    for t = 1:length(trainLabels)
+    % Load all the descriptors of the training set and concatenate them into a
+    % single array:
+    
+    allDescriptors = [];
+    
+    for cat = 1:length(dataset)
         
-        [~,imgFname,~] = fileparts(dataset(cat).files{t});
-        featFname      = fullfile(catPath,[imgFname '.' featSuffix]);
-        load(featFname,'features','-mat');
+        catPath     = fullfile(datasetDir,dataset(cat).className);
+        trainLabels = find(dataset(cat).train_id);
         
-        data2add = features.data;
-        numDesc  = size(features.data,1);
+        for t = 1:length(trainLabels)
+            
+            [~,imgFname,~] = fileparts(dataset(cat).files{t});
+            featFname      = fullfile(catPath,[imgFname '.' featSuffix]);
+            load(featFname,'features','-mat');
+            
+            data2add = features.data;
+            numDesc  = size(features.data,1);
+            
+            % Add a balanced amount the descriptors per image
+            
+            if numDesc > maxNumFeatsImg
+                p        = randi(numDesc,1,floor(maxNumFeatsImg));
+                data2add = data2add(p,:);
+            end
+            
+            allDescriptors = [allDescriptors ; data2add];
+            
+        end % end for trainLabels
         
-        % Add a balanced amount the descriptors per image
+        % Select the maxNumFeats
         
-        if numDesc > maxNumFeatsImg
-            p        = randi(numDesc,1,floor(maxNumFeatsImg));
-            data2add = data2add(p,:);
+        totalDesc = size(allDescriptors,1);
+        
+        if totalDesc > maxNumFeats
+            
+            fprintf('Reducing to %d descriptors\n', maxNumFeats);
+            p              = randi(totalDesc,1,maxNumFeats);
+            allDescriptors = allDescriptors(p,:);
+            
         end
         
-        allDescriptors = [allDescriptors ; data2add];
-        
-    end % end for trainLabels
+    end % for categories
     
-    % Select the maxNumFeats
-    
-    totalDesc = size(allDescriptors,1);
-    
-    if totalDesc > maxNumFeats
-    
-        fprintf('Reducing to %d descriptors\n', maxNumFeats);
-        p              = randi(totalDesc,1,maxNumFeats);
-        allDescriptors = allDescriptors(p,:);
-    
-    end
     
     % Perform clustering
     fprintf('\nRunning K-means...\n');
     dictionary =  kmeans_bo(double(allDescriptors),params.dictionarySize,...
         params.kmeans.maxIter); % BOVW Codebook
-
+    
     dictionary = dictionary'; % Back to num_words x desc_dim size
     % Saving the dictionary
     
     fprintf('Saving BOVW dictionary...\n');
     
-    savepath = dictDir;
-    saveFname = sprintf('dictionary_%d.mat',params.dictionarySize);
-    mkdir(savepath);
+    mkdir(dictDir);
     
-    save(fullfile(savepath,saveFname),'dictionary');
+    save(fullfile(savePath,dictFname),'dictionary');
     
-	fprintf('Done.\n');
+    fprintf('Done.\n');
+    
+end % end if/else build vocab
 
-
-end % for categories
+end % end create ditionaries
 

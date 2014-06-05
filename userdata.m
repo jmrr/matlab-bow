@@ -36,5 +36,5 @@ params = struct(...
       'maxNumFeats',      100000,...     % Max number of descriptors to be used
       'normHist',         1),...         % 1 to normalise histograms, 0 otherwise
     'pyramidLevels',    3,...          % Number of spatial pyramid levels
-    'encodingMethod',   'llc');        % Encoding methods
+    'encodingMethod',   'llc');        % Encoding methods 'HA', 'llc'...
 

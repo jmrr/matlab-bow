@@ -53,8 +53,8 @@ for cat = 1:length(dataset)
     
     %% Save histograms of all images in a category in this directory in a single file
     
-    savePathAll = fullfile(catPath, sprintf('histograms_%d.mat', params.dictionarySize));
-    save(savePathAll, 'HoVW_all', '-ascii');
+    savePathAll = fullfile(catPath, sprintf('HA_%d.mat', params.dictionarySize));
+    save(savePathAll, 'HoVW_all');
     
 end % end for categories
 

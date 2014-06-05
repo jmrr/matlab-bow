@@ -23,7 +23,7 @@ dataset = splitDataset(datasetDir,params.numTrainImages,params.numTestImages);
 
 feature_extraction(datasetDir,dataset,params);
 
-%% 3. Generate histogram of visual words
+%% 3. Compute or load dictionary of visual words
 
 create_dictionaries(datasetDir,params,dataset,dictDir);
 
@@ -54,3 +54,9 @@ pyramid_all = compile_pyramid(dataset,datasetDir,sprintf('_HA_encoded_%d.mat',pa
 
 % 6.2 Linear SVM
 [svmModel,prediction] = linear_svm(featTrain,featTest,labelsTrain,labelsTest,dataset,params);
+
+% 6.3 Precomputed kernels SVM
+
+[kernelTrain,kernelTest] = compute_kernel_map(dataset,datasetDir,dictDir,params,'kchi2');
+
+[svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,labelsTrain,labelsTest,dataset,params);
