@@ -1,4 +1,4 @@
-function [svmModel,prediction] = linear_svm(featTrain,featTest,allLabelsTrain,allLabelsTest,dataset,params)
+function [svmModel,prediction] = linear_svm(featTrain,featTest,dataset,params)
 
 % SVM PARAMETERS
 
@@ -16,15 +16,16 @@ initTest      = 1;
 
 for cat = 1:length(dataset)
     
-    trainLabels = -1*ones(dataset(cat).numImages,1);
-    testLabels  = -1*ones(dataset(cat).numImages,1);
+    trainLabels  = -1*ones(size(featTrain,1),1);
+    testLabels   = -1*ones(size(featTest,1),1);
+    trainIndices = initTrain:initTrain+params.numTrainImages-1;
+    testIndices  = initTest:initTest+params.numTrainImages-1;
     
-    trainLabels(initTrain:initTrain+params.numTrainImages-1) = 1;
-    testLabels(initTest:initTest+params.numTrainImages-1)    = 1;    
+    trainLabels(trainIndices) = 1;
+    testLabels(testIndices)   = 1;    
     
-    initTrain  = initTrain + params.numTrainImages; % Advance in the training stack
-    initTest   = initTest + params.numTestImages;   % Advance in the testing stack
-    
+    initTrain = initTrain + params.numTrainImages; % Advance in the training stack
+    initTest  = initTest + params.numTestImages;   % Advance in the testing stack
     fprintf('Now training SVM for %s ...\n',dataset(cat).className)
     
     c_vals = [1.6 1.8 2 2.2 2.4 2.6 2.8 3 3.2 3.4 3.6 3.8 4 4.2 4.4 4.6 4.8 ...

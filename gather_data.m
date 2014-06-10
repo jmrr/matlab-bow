@@ -1,11 +1,13 @@
-function [featTrain,featTest,labelsTrain,labelsTest] = gather_data(dataset,datasetDir,params)
+function [featTrain,featTest] = gather_data(dataset,datasetDir,params)
 
 % Initialise  values
 
 featTrain   = [];
 featTest    = [];
-labelsTrain = [];
-labelsTest  = [];
+
+% feature type flag
+
+encoding = params.encodingMethod;
 
 for cat = 1:length(dataset)
     
@@ -15,16 +17,19 @@ for cat = 1:length(dataset)
     
     numTrainSam  = sum(trainIndices);
     numTestSam   = sum(testIndices);
-    % Load training features
+    % Load training featuresc
     
     load(fullfile(datasetDir,dataset(cat).className,...
         [params.encodingMethod '_' num2str(params.dictionarySize) '.mat']));
     
-    featTrain   = [featTrain; LLC_all(trainIndices,:)];
-    featTest    = [featTest; LLC_all(testIndices,:)];
+    if(strcmpi(encoding,'llc'))
+        featTrain   = [featTrain; LLC_all(trainIndices,:)];
+        featTest    = [featTest; LLC_all(testIndices,:)];
+    elseif(strcmpi(encoding,'HA'))
+        featTrain = [featTrain; HoVW_all(trainIndices,:)];
+        featTest  = [featTest; HoVW_all(testIndices,:)];
+    end
     
-    labelsTrain = [labelsTrain; cat*(ones(numTrainSam,1))];
-    labelsTest  = [labelsTest; cat*(ones(numTestSam,1))];
 end % end for categories
 
 end

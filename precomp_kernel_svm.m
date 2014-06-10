@@ -1,4 +1,4 @@
-function [svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,allLabelsTrain,allLabelsTest,dataset,params)
+function [svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,dataset,params)
 
 % SVM PARAMETERS
 
@@ -16,14 +16,16 @@ initTest      = 1;
 
 for cat = 1:length(dataset)
     
-    trainLabels = -1*ones(size(allLabelsTrain));
-    testLabels  = -1*ones(size(allLabelsTest));
+    trainLabels  = -1*ones(size(kernelTrain,1),1);
+    testLabels   = -1*ones(size(kernelTest,1),1);
+    trainIndices = initTrain:initTrain+params.numTrainImages-1;
+    testIndices  = initTest:initTest+params.numTrainImages-1;
     
-    trainLabels(initTrain:initTrain+params.numTrainImages-1) = 1;
-    testLabels(initTest:initTest+params.numTrainImages-1)    = 1;    
+    trainLabels(trainIndices) = 1;
+    testLabels(testIndices)   = 1;    
     
-    initTrain  = initTrain + params.numTrainImages; % Advance in the training stack
-    initTest   = initTest + params.numTestImages;   % Advance in the testing stack
+    initTrain = initTrain + params.numTrainImages; % Advance in the training stack
+    initTest  = initTest + params.numTestImages;   % Advance in the testing stack
     
     fprintf('Now training SVM for %s ...\n',dataset(cat).className)
     
@@ -39,19 +41,21 @@ for cat = 1:length(dataset)
         
         svmParams = sprintf('-t %d -v %d -c %f -b %d -q',KERNEL_TYPE,CROSS_VALID_N,c_vals(ci),1);
                 
-        model(ci) = svmtrain(trainLabels,[(1:size(kernelTrain{cat},1))' ,kernelTrain{cat}],svmParams);
+        model(ci) = svmtrain(trainLabels,[(1:size(kernelTrain,1))' ,kernelTrain],svmParams);
         
     end
     
-    % Select the best C among c_vals and test your model on the testing set.
+    % Select the best C among c_vals and retrain.
     
     [~,best_c] = max(model);
     
     svmParams = sprintf('-t %d -c %f -b %d -q',KERNEL_TYPE,c_vals(best_c),1);
     
-    svmModel(cat) = svmtrain(trainLabels,[(1:size(kernelTrain{cat},1))' ,kernelTrain{cat}],svmParams);
+    svmModel(cat) = svmtrain(trainLabels,[(1:size(kernelTrain,1))' ,kernelTrain],svmParams);
     
-    [predicted_label, accuracy, estimates] = svmpredict(testLabels,[(1:size(kernelTest{cat},1))' ,kernelTest{cat}],svmModel(cat),'-b 1');
+    
+    % Test the model on the testing set     
+    [predicted_label, accuracy, estimates] = svmpredict(testLabels,[(1:size(kernelTest,1))' ,kernelTest],svmModel(cat),'-b 1');
     
     prediction{cat}.predicted_label = predicted_label;
     prediction{cat}.accuracy        = accuracy;

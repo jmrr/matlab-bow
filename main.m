@@ -50,13 +50,13 @@ pyramid_all = compile_pyramid(dataset,datasetDir,sprintf('_HA_encoded_%d.mat',pa
 % 6.1 Gather the data from all categories and prepare it for SVM input and
 % cross-validation.
 
-[featTrain,featTest,labelsTrain,labelsTest] = gather_data(dataset,datasetDir,params);
+[featTrain,featTest] = gather_data(dataset,datasetDir,params);
 
 % 6.2 Linear SVM
-[svmModel,prediction] = linear_svm(featTrain,featTest,labelsTrain,labelsTest,dataset,params);
+[svmModel,prediction] = linear_svm(featTrain,featTest,dataset,params);
 
 % 6.3 Precomputed kernels SVM
 
 [kernelTrain,kernelTest] = compute_kernel_map(dataset,datasetDir,dictDir,params,'kchi2');
 
-[svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,labelsTrain,labelsTest,dataset,params);
+[svmModel,prediction] = precomp_kernel_svm(kernelTrain,kernelTest,dataset,params);
