@@ -93,7 +93,7 @@ else % Build vocabulary
     
     mkdir(dictDir);
     
-    save(fullfile(savePath,dictFname),'dictionary');
+    save(savePath,'dictionary');
     
     fprintf('Done.\n');
     
