@@ -2,13 +2,12 @@
 %   Edit this script to enter the information you need for BOW_PIPELINE.
 %
 %   * Specify paths for the 3rd party libraries
-%
+%   * Specify location of datasets
+%   * Choose BOVW parameters in the params struct.
 %
 %   Copyright 2014 Jose Rivera @ BICV group Imperial College London.
 
-%% PATHS
-
-
+%% PATHS [MODIFY IF NECESSARY]
 
 libPath    = './lib';                   % Lib path (3rd party libraries and code)
 utilsPath  = './utils';                 % Utils path (utils code)
@@ -21,8 +20,8 @@ addpath(lp,utilsPath);
 % Library initialisation (required for VLFeat)
 vl_setup;
 
-% Parameters
-
+% PARAMETERS [MODIFY IF NECESSARY]
+	
 params = struct(...
     'feat',             'dsift',...    % Feature type: 'dsift', 'sift'
     'maxImageSize',     300,...

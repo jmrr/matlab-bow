@@ -1,17 +1,16 @@
-% MAIN  Main script to run BOW_PIPELINE
-%   Edit this script to choose the feature parameters for BOW_PIPELINE. The
-%   rest of the parameters can be found in userdata.m
+% MAIN  Main script to run BOW_PIPELINE in the Hard Assignment encoding case.
+%   Edit userdata_BOVWdemo script to choose the feature parameters for BOW_PIPELINE.
 %   
 %   If this is the first time you use BOW_PIPELINE, run setup.m before
 %   running this script
 %
-%   See also USERDATA, SETUP
+%   See also USERDATA_BOVWDEMO, SETUP
 %
 %   Copyright 2014 Jose Rivera @ BICV group Imperial College London.
 
 % PATHS
 
-%% 0. Choose parameters in userdata and run the script
+%% 0. Choose parameters in userdata_BOVWdemo and run the script
 
 userdata_BOVWdemo
 
